@@ -5,8 +5,8 @@ import SearchButton from './Components/SearchButton';
 
 const NavBar = () => (
   <div className="navbar">
-    <Link to="/">Feed</Link>
-    <Link to="/profile">Profile</Link>
+    <Link to="/">Home</Link>
+    <Link to="/Search">Search</Link>
   </div>
 );
 const Template = ({ title }) => (
@@ -17,21 +17,29 @@ const Template = ({ title }) => (
     </p>
   </div>
 );
-const Feed = (props) => (
-  <Template title="Feed"/>
+const Home = (props) => (
+ <div>
+  <Template title="Home"/>
+  <p> Hello World </p>
+  <SearchButton/>
+</div>
 );
-const Profile = (props) => (
-  <Template title="Profile"/>
+
+const Search = (props) => (
+  <Template title="Search"/>
 );
+
+
 class App extends Component {
   render() {
     return (
       <div>
       <Router history={browserHistory}>
-        <Route path="/" component={Feed}/>
-        <Route path="/profile" component={Profile}/>
+        <Route path="/" component={Home}/>
+        <Route path="/Search" component={Search}/>
+        <Route path="/Search" component={SearchButton}/>
       </Router>
-      <SearchButton/>
+
       </div>
     );
   }

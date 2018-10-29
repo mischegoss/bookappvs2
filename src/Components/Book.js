@@ -1,37 +1,37 @@
 import React, {Component} from 'react'
-import Changer from './Changer';
+import {PropTypes} from 'prop-types'
+import Changer from './Changer'
 
-// Component to render individual book
 class Book extends Component {
 
-  render() {
-    const {book, updateOption} = this.props
-    let shelfValue = (book.shelf)
-      ? book.shelf
-      : 'move'
+  static propTypes = {
+    book: PropTypes.object.isRequired,
+    onUpdate: PropTypes.func.isRequired
+  }
 
+  changeShelf = (e) => {
+    this.props.onUpdate(e.target.value)
+  }
+
+  render() {
+    const book = this.props.book
     return (
       <li>
         <div className="book">
           <div className="book-top">
-            {book.imageLinks && (
-              <div
-                className="book-cover"
-                style={{
-                width: 128,
-                height: 193,
-                backgroundImage: `url(${book.imageLinks.thumbnail})`
-              }}></div>
-            )}
-            <div className="book-shelf-changer">
-              <Changer/>
+            <div className="book-cover" style={{
+              width: 128,
+              height: 193,
+              backgroundImage: `url("${book.imageLinks.thumbnail}")`
+            }}></div>
+
+           <Changer/>
+
+
+
           </div>
           <div className="book-title">{book.title}</div>
-          {book.author && book
-            .authors
-            .map((author, index) => (
-              <div key={index} className="book-authors">{author}</div>
-            ))}
+          <div className="book-authors">{book.authors}</div>
         </div>
       </li>
     )

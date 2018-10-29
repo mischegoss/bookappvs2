@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 
 function SearchButton(props) {
 
 return (
   <div className="open-search">
-              <Link to="/Search">Search</Link>
+              <Link to="./Search">Search</Link>
             </div>
  )
 };

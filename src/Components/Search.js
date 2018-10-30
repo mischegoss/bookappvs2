@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import Book from './Book'
 import * as BooksAPI from '../BooksAPI'
-import Shelf from './BookShelves'
+
 class Search extends  Component {
 
     // As shelf of the book may change over time, books are stored in state rather than in prop.
@@ -10,12 +10,6 @@ class Search extends  Component {
         books:[],
         searchResult:[],
         hasError:false
-    }
-
-    // Current books are fetched from Homepage after component is inserted into DOM
-    componentDidMount(){
-        this.setState({
-            })
     }
 
     // Handler function for searching book through BooksAPI
@@ -26,7 +20,7 @@ class Search extends  Component {
                 if(!resultBooks || resultBooks.hasOwnProperty('error')){
                     this.setState({searchResult: [], hasError: true })
                 } else {
-                    this.setState({hasError:false})
+                    this.setState({searchResult: resultBooks, hasError:false})
                     this.syncBookShelfProperty()
                 }
             })
@@ -65,33 +59,46 @@ class Search extends  Component {
 
     }
 
-
-     render() {
-  const {filteredBooks, searchBooks, updateOption} = this.props
-
-  return (
-    <div>
-
-      <div className="search-books-bar">
-        <Link to='/' className='close-search'>Close</Link>
-        <div className='search-books-input-wrapper'>
-          <input
-            className='search-books-results'
-            type='text'
-            placeholder='Search books..'
-            onChange={(event) => searchBooks(event.target.value)}/>
+   render() {
+       const searchResult = this.state.searchResult
+       const hasError = this.state.hasError
+       return(
+        <div className="search-books">
+            <div className="search-books-bar">
+            <Link to="/" className="close-search">Close</Link>
+                    <div className="search-books-input-wrapper">
+                    <input
+                         type="text"
+                         onChange={this.onSearch}
+                         placeholder="Search by title or author"/>
+                    </div>
+            </div>
+            <div className="search-books-results">
+                {searchResult.length>0 && (
+                <div>
+                    <div>
+                        <h3>Search Returned {searchResult.length} books</h3>
+                    </div>
+                <ol className="books-grid">
+                    {searchResult.map((book) =>(
+                        <Book
+                            key={book.id}
+                            book={book}
+                            onChangeShelf={this.onChangeShelf}
+                        />
+                    ))}
+                </ol>
+                </div>
+                )}
+                {hasError && (
+                    <div>
+                        <h3>Search returned no books. Please try again !</h3>
+                    </div>
+                )}
+            </div>
         </div>
-      </div>
-
-      <div className="search-books-results">
-        <ol className="books-grid">
-          {filteredBooks.map(book => (<Shelf book={book} key={book.id} updateOption={updateOption}/>))}
-        </ol>
-      </div>
-
-    </div>
-  )
-}
+       )
+   }
 }
 
 export default Search

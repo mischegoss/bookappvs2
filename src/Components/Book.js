@@ -25,8 +25,8 @@ class Book extends Component {
               backgroundImage: `url("${book.imageLinks.thumbnail}")`
             }}></div>
 
-          
 
+//Changer goes here
 
 
           </div>

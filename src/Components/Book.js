@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {PropTypes} from 'prop-types'
-import Changer from './Changer'
+
 
 class Book extends Component {
 
@@ -25,7 +25,7 @@ class Book extends Component {
               backgroundImage: `url("${book.imageLinks.thumbnail}")`
             }}></div>
 
-           <Changer/>
+          
 
 
 

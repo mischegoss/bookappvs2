@@ -7,7 +7,6 @@ import './App.css'
 
 class BooksApp extends Component {
   state = {
-    query: "",
     allBooks: [],
     filteredBooks: []
   }
@@ -25,12 +24,12 @@ class BooksApp extends Component {
     if (query) {
       BooksAPI
         .search(query)
-        .then((filteredBooks) => {
-          this.updateQuery(filteredBooks)
-          if (filteredBooks.error) {
-            this.setState({filteredBooks: []})
+        .then((result) => {
+          this.updateSearch(result)
+          if (result.error !== 'empty query') {
+            this.setState({filteredBooks: result})
           } else {
-            this.setState({filteredBooks})
+            this.setState({filteredBooks: []})
           }
         })
     } else {
@@ -38,22 +37,27 @@ class BooksApp extends Component {
     }
   }
 
-updateQuery = (query) => {
-        this.setState({ query })
-        this.searchBooks(query)
-    }
 
   updateShelf = (book, shelf) => {
     BooksAPI
       .update(book, shelf)
       .then(updated => (BooksAPI.getAll().then((books) => {
         this.setState({allBooks: books})
-        this.updateQuery(this.state.filteredBooks)
+        this.updateSearch(this.state.filteredBooks)
       })))
   }
 
 
-
+  updateSearch = (values) => {
+    for (let value of values) {
+      for (let book of this.state.allBooks) {
+        if (value.id === book.id) {
+          value.shelf = book.shelf
+        }
+      }
+                   }
+    this.setState({filteredBooks: values})
+  }
 
   render() {
     return (
@@ -77,6 +81,16 @@ updateQuery = (query) => {
                 updateOption={(book, shelf) => this.updateShelf(book, shelf)}/>
             </div>
           )}/>
+
+          <Route
+            component={function NoMatch() {
+            return (
+              <div className="errorPage">
+                <h1>404</h1>
+                <h3>Page not Found</h3>
+              </div>
+            )
+          }}/>
 
         </Switch>
       </div>

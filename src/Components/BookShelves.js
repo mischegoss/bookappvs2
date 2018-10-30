@@ -9,13 +9,6 @@ class Shelf extends Component {
       ? book.shelf
       : 'move'
 
-      const authors = this.props.book.authors && this
-              .props
-              .book
-              .authors
-              .join(' | ');
-
-
     return (
       <li>
         <div className="book">
@@ -45,13 +38,12 @@ class Shelf extends Component {
           </div>
 
           <div className="book-title">{book.title}</div>
-
-          <div className="book-authors">{authors}</div>
-
-
-          </div>
+          {book.author && book
+            .authors
+            .map((author, index) => (
+              <div key={index} className="book-authors">{author}</div>
             ))}
-
+        </div>
 
       </li>
     )

@@ -26,7 +26,7 @@ class Book extends Component {
             }}></div>
 
 
-//Changer goes here
+
 
 
           </div>

@@ -1,61 +1,69 @@
 import React, {Component} from 'react'
-import {Link} from 'react-router-dom'
-import PropTypes from 'prop-types'
-import Shelf from './BookShelves'
-import SearchButton from './SearchButton'
+//import {Link} from 'react-router-dom';
+import Shelf from "./Shelf";
+import SearchButton from "./SearchButton";
+import MainTitle from "./MainTitle";
 
 class BookCase extends Component {
-  static propTypes = {
-    books: PropTypes.array.isRequired
-  }
+    state = {}
 
-  render() {
-    const {books, updateOption} = this.props
+    componentDidMount = () => {
+        // Update the list of all books
+        this
+            .props
+            .onRefreshAllBooks();
+    }
 
-    return (
-      <div className="list-books">
-        <div className="list-books-title">
-          <h1>MyReads</h1>
-        </div>
+    updateShelves = () => {
 
-        <div className="list-books-content">
+        const newCurrent = {
+            name: "Currently Reading",
+            books: this
+                .props
+                .books
+                .filter(book => book.shelf === 'currentlyReading')
+        };
+        const newWant = {
+            name: "Want to Read",
+            books: this
+                .props
+                .books
+                .filter(book => book.shelf === "wantToRead")
+        };
+        const newRead = {
+            name: "Read",
+            books: this
+                .props
+                .books
+                .filter(book => book.shelf === "read")
+        };
 
-          <div className="bookshelf">
-            <h2 className="bookshelf-title">Currently Reading</h2>
-            <div className="bookshelf-books">
-              <ol className="books-grid">
-                {books.filter((book) => book.shelf === "currentlyReading").map(book => (<Shelf book={book} key={book.id} updateOption={updateOption}/>))}
-              </ol>
-            </div>
-          </div>
+        return ([newCurrent, newWant, newRead]);
+    }
 
-          <div className="bookshelf">
-            <h2 className="bookshelf-title">Want To Read</h2>
-            <div className="bookshelf-books">
-              <ol className="books-grid">
-                {books.filter((book) => book.shelf === "wantToRead").map(book => (<Shelf book={book} key={book.id} updateOption={updateOption}/>))}
-              </ol>
-            </div>
-          </div>
+    render() {
+        let shelves = [];
+        if (this.props.books && this.props.books.length)
+            shelves = this.updateShelves();
 
-          <div className="bookshelf">
-            <h2 className="bookshelf-title">Read</h2>
-            <div className="bookshelf-books">
-              <ol className="books-grid">
-                {books.filter((book) => book.shelf === "read").map(book => (<Shelf book={book} key={book.id} updateOption={updateOption}/>))}
-              </ol>
-            </div>
-          </div>
-          <SearchButton/>
-          /*<div className="open-search">
-            <Link to="/search">Add a book</Link>
-          </div>*/
+        return (
+            <div className="app">
+                <MainTitle title="MyReads"/>
+                    <div className="list-books-content">
+                        <div>
+                            {shelves && shelves.map((shelf) => (<Shelf
+                                key={shelf.name}
+                                shelf={shelf}
+                                onChangeShelf={this.props.onChangeShelf}
+                            />))}
+                        </div>
+                    </div>
+                    <SearchButton/>
+                </div>
 
-        </div>
-      </div>
-    )
-  }
 
+        )
+    }
 }
 
-export default BookCase
+export default BookCase;

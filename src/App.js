@@ -1,98 +1,80 @@
-import React, {Component} from 'react'
-import {Switch, Route} from 'react-router-dom'
+import React from 'react'
+import {Route} from 'react-router-dom';
+
 import * as BooksAPI from './BooksAPI'
-import BookCase from './Components/BookCase'
-import Search from './Components/Search'
+import * as Utilities from './Utilities';
+
 import './App.css'
+import BookCase from './components/BookCase';
+import Search from './components/Search';
 
-class BooksApp extends Component {
+class BooksApp extends React.Component {
   state = {
-    allBooks: [],
-    filteredBooks: []
+
+    showSearchPage: false
   }
 
-  // gets all the books
-  componentDidMount() {
-    BooksAPI
-      .getAll()
-      .then((books) => {
-        this.setState({allBooks: books})
-      })
-  }
-
-  searchBooks = (query) => {
-    if (query) {
-      BooksAPI
-        .search(query)
-        .then((result) => {
-          this.updateSearch(result)
-          if (result.error !== 'empty query') {
-            this.setState({filteredBooks: result})
-          } else {
-            this.setState({filteredBooks: []})
-          }
-        })
-    } else {
-      this.setState({filteredBooks: []})
+  componentDidMount = () => {
+    if (this.state.newBook) {
+      this.refreshAllBooks();
     }
   }
 
-
-  updateShelf = (book, shelf) => {
+  refreshAllBooks = () => {
+    // Get the books currently on the bookshelves and update the state with the
+    // returned, sorted list
     BooksAPI
-      .update(book, shelf)
-      .then(updated => (BooksAPI.getAll().then((books) => {
-        this.setState({allBooks: books})
-        this.updateSearch(this.state.filteredBooks)
-      })))
+      .getAll()
+      .then((list) => {
+        this.setState({
+          books: Utilities.sortAllBooks(list),
+          newBook: false
+        });
+      });
   }
 
-
-  updateSearch = (values) => {
-    for (let value of values) {
-      for (let book of this.state.allBooks) {
-        if (value.id === book.id) {
-          value.shelf = book.shelf
+  changeShelf = (book, shelf) => {
+    // Make the call to the service to update the shelf for the selected book to the
+    // newly selected shelf
+    BooksAPI
+      .update(book, shelf)
+      .then(response => {
+        // Update the state of the book. Start with a copy of the list of books.
+        let newList = this
+          .state
+          .books
+          .slice(0);
+        // Look for the book in the list. It might not be there yet.
+        const books = newList.filter(listBook => listBook.id === book.id);
+        if (books.length) {
+          // Update the book that's already on the shelf
+          books[0].shelf = shelf;
+        } else {
+          // Add the book to the shelf and sort the list of books again
+          newList.push(book);
+          newList = Utilities.sortAllBooks(newList);
         }
-      }
-                   }
-    this.setState({filteredBooks: values})
+        // Update the state with the newList
+        this.setState({books: newList});
+      })
   }
 
   render() {
     return (
       <div className="app">
+        <Route
+          exact
+          path='/'
+          render={(() => (<BookCase
+          books={this.state.books}
+          onChangeShelf={this.changeShelf}
+          onRefreshAllBooks={this.refreshAllBooks}/>))}/>
 
-        <Switch>
-          <Route
-            exact
-            path="/"
-            render={() => (<BookCase
-            books={this.state.allBooks}
-            updateOption={(book, shelf) => this.updateShelf(book, shelf)}/>)}/>
+        <Route
+          exact
+          path='/search'
+          render={(() => (<Search selectedBooks={this.state.books} onChangeShelf={this.changeShelf}/>))}/>
 
-          <Route
-            path="/search"
-            render={() => (
-            <div >
-              <Search
-                filteredBooks={this.state.filteredBooks}
-                searchBooks={(query) => this.searchBooks(query)}
-                updateOption={(book, shelf) => this.updateShelf(book, shelf)}/>
-            </div>
-          )}/>
-
-          <Route
-            component={function NoMatch() {
-            return (
-              <div className="errorPage">
-                <h1>404</h1>
-                <h3>Page not Found</h3>
-              </div>
-            )
-          }}/>
-
-        </Switch>
       </div>
     )
   }

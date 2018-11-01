@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {Link} from 'react-router-dom';
 import * as BooksAPI from '../BooksAPI';
-import * as BookUtils from '../BookUtils';
+import * as Utilities from '../Utilities';
 import Book from './Book';
 
 class Search extends Component {
@@ -9,7 +9,7 @@ class Search extends Component {
     state = {
         query: "",
         books: [],
-        quickView: {},
+        //quickView: {},
         showModal: false
     };
 
@@ -20,7 +20,7 @@ class Search extends Component {
         // search
         clearTimeout(this.queryTimer);
         this.setState({query: value});
-        this.queryTimer = setTimeout(this.updateSearch, 250);
+        this.queryTimer = setTimeout(this.updateSearch, 200);
     }
 
     updateSearch = () => {
@@ -44,8 +44,9 @@ class Search extends Component {
                 } else if (response.length) {
                     // Check the list of books the user already has on their shelves against the
                     // search results and apply shelf data accordingly
-                    newList = BookUtils.mergeShelfAndSearch(this.props.selectedBooks, response);
-                    newList = BookUtils.sortAllBooks(newList);
+                    newList = Utilities.mergeShelfAndSearch(this.props.selectedBooks, response);
+                    //newList = Utilities.sortAllBooks(newList);
+
                 }
 
                 // Set the state based on the new response
@@ -56,8 +57,8 @@ class Search extends Component {
     componentWillReceiveProps = (props) => {
         // Re-merge and sort the shelf and search lists and set the state
         this.props = props;
-        let newList = BookUtils.mergeShelfAndSearch(this.props.selectedBooks, this.state.books);
-        newList = BookUtils.sortAllBooks(newList);
+        let newList = Utilities.mergeShelfAndSearch(this.props.selectedBooks, this.state.books);
+        //newList = Utilities.sortAllBooks(newList);
         this.setState({books: newList});
     }
 
@@ -94,7 +95,7 @@ class Search extends Component {
                                     <Book
                                         book={book}
                                         onChangeShelf={this.props.onChangeShelf}
-                                        onUpdateQuickView={this.updateQuickView}/>
+                                        /*onUpdateQuickView={this.updateQuickView}*//>
                                 </li>
                             ))}
                     </ol>

@@ -5,10 +5,23 @@ import Book from "./Book";
 
 class Search extends Component {
   state = {
-    query: "",
+
     books: [],
-    showModal: false
+    query: ""
   };
+
+mergePages = (shelf, search) => {
+  const hashTable = {};
+  shelf.forEach(book => hashTable[book.id] = book.shelf);
+  search.forEach(book => {
+      book.shelf = hashTable[book.id] || 'none';
+  });
+
+  return search;
+}
+
+
+
 
   queryTimer = null;
 
@@ -34,7 +47,7 @@ class Search extends Component {
       ) {
         newError = true;
       } else if (response.length) {
-        newList = (this.props.selectedBooks, response);
+         newList = this.mergePages(this.props.selectedBooks, response);
       }
 
       this.setState({ error: newError, books: newList });
@@ -46,6 +59,7 @@ class Search extends Component {
     let newList = (this.props.selectedBooks, this.state.books);
     this.setState({ books: newList });
   };
+
 
   render() {
     return (

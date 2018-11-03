@@ -1,5 +1,4 @@
-import React, {Component} from 'react'
-// import * as BooksAPI from './BooksAPI'
+import React, {Component} from 'react';
 import Book from "./Book";
 
 class Shelf extends Component {
@@ -20,6 +19,7 @@ class Shelf extends Component {
                                     <Book
                                         book={book}
                                         onChangeShelf={this.props.onChangeShelf}/>
+
                                 </li>
                             ))}
                     </ol>

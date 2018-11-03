@@ -9,7 +9,7 @@ class BookCase extends Component {
   componentDidMount = () => {
     this.props.onRefreshBooks();
   };
-// This is the method to update information on individual shelfs. Using method from Doug Brown walkthrough
+// This is the method to update information on individual shelfs.
   shelfUpdater = () => {
     const shelfCurrent = {
       name: "Currently Reading",
@@ -28,16 +28,16 @@ class BookCase extends Component {
   };
 
   render() {
-    let shelves = [];
+    let allShelves = [];
     if (this.props.books && this.props.books.length)
-      shelves = this.shelfUpdater();
+      allShelves = this.shelfUpdater();
     return (
       <div className="app">
         <MainTitle title="MyReads" />
         <div className="list-books-content">
           <div>
-            {shelves &&
-              shelves.map(shelf => (
+            {allShelves &&
+              allShelves.map(shelf => (
                 <Shelf
                   key={shelf.name}
                   shelf={shelf}

@@ -7,7 +7,7 @@ class Book extends Component {
   };
 
   render() {
-    // Many thanks to Doug Brown's tutorial and Slack for help with this method
+    // This is to handle multiple authors
     const authors =
       this.props.book.authors && this.props.book.authors.join(" & ");
 

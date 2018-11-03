@@ -5,32 +5,28 @@ import Book from "./Book";
 
 class Search extends Component {
   state = {
-
     books: [],
     query: ""
   };
+/*This creates a hashtable to merge what is seen on the shelves with search results */
+  mergePages = (shelf, search) => {
+    const hashTable = {};
+    shelf.forEach(book => (hashTable[book.id] = book.shelf));
+    search.forEach(book => {
+      book.shelf = hashTable[book.id] || "none";
+    });
 
-mergePages = (shelf, search) => {
-  const hashTable = {};
-  shelf.forEach(book => hashTable[book.id] = book.shelf);
-  search.forEach(book => {
-      book.shelf = hashTable[book.id] || 'none';
-  });
-
-  return search;
-}
-
-
-
+    return search;
+  };
 
   queryTimer = null;
-
+/*This sets a very short delay */
   changeQuery = value => {
     clearTimeout(this.queryTimer);
     this.setState({ query: value });
     this.queryTimer = setTimeout(this.updateSearch, 200);
   };
-
+/*Search functions */
   updateSearch = () => {
     if (this.state.query === "") {
       this.setState({ error: false, books: [] });
@@ -47,7 +43,7 @@ mergePages = (shelf, search) => {
       ) {
         newError = true;
       } else if (response.length) {
-         newList = this.mergePages(this.props.selectedBooks, response);
+        newList = this.mergePages(this.props.selectedBooks, response);
       }
 
       this.setState({ error: newError, books: newList });
@@ -59,7 +55,6 @@ mergePages = (shelf, search) => {
     let newList = (this.props.selectedBooks, this.state.books);
     this.setState({ books: newList });
   };
-
 
   render() {
     return (

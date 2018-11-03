@@ -13,7 +13,7 @@ class BooksApp extends React.Component {
       this.refreshBooks();
     }
   };
-//Gets the books on shelves, Special thanks to Doug Brown walkthrough
+  //Gets the books on shelves, Special thanks to Doug Brown walkthrough
   refreshBooks = () => {
     BooksAPI.getAll().then(list => {
       this.setState({
@@ -22,7 +22,7 @@ class BooksApp extends React.Component {
       });
     });
   };
-// Update the shelf for book
+  // Update the shelf for book
   changeShelf = (book, shelf) => {
     BooksAPI.update(book, shelf).then(response => {
       let newList = this.state.books.slice(0);

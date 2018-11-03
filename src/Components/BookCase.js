@@ -9,7 +9,7 @@ class BookCase extends Component {
   componentDidMount = () => {
     this.props.onRefreshBooks();
   };
-// This is the method to update information on individual shelfs.
+  // This is the information on individual shelves
   shelfUpdater = () => {
     const shelfCurrent = {
       name: "Currently Reading",
